@@ -9,6 +9,10 @@ move:x
 
 This opens (-x) or closes (x) the needle valve. It does not respond until calibrated.
 
+pos:x
+
+This takes care of the absolute positioning. -x is a position that can be reached going CCW and x a position that can be reached in the CW direction. It does not respond until calibrated.
+
 es
 
 This returns the state of the homeswitch (NO): 0(closed) or 1(open)
