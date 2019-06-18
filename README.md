@@ -11,7 +11,7 @@ This opens (-x) or closes (x) the needle valve. It does not respond until calibr
 
 pos:x
 
-This takes care of the absolute positioning. -x is a position that can be reached going CCW and x a position that can be reached in the CW direction. It does not respond until calibrated.
+This takes care of the absolute positioning. -x is a position that can be reached going CCW and x a position that can be reached in the CW direction and has the calibrated 0 as the starting point. It does not respond until calibrated.
 
 es
 
