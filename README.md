@@ -24,3 +24,4 @@ This will program the nano, that needs to be connected at that moment, without a
 and easy installation.
 
 The smt172 sensor needs to be connected to pin 8, the drv8825 to pin 12(dir) and pin 11(step), the homeswitch to pin 10.
+This sketch uses the great smt172 library by Edwin Croissant.
