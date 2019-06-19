@@ -1,4 +1,4 @@
-This is to control a needlevalve mechanism with a homeswitch through the serial-USB port of an Arduino Nano, while also measuring the temperature with an smt172 in combination with a Raspberry Pi.
+This project is to control a needlevalve mechanism with a homeswitch through the serial-USB port of an Arduino Nano, while also measuring the temperature with an smt172 in combination with a Raspberry Pi.
 The commands that can be sent are the following:
 
 cal:x
@@ -16,3 +16,9 @@ This takes care of the absolute positioning. -x is a position that can be reache
 es
 
 This returns the state of the homeswitch (NO): 0(closed) or 1(open)
+
+The install script is meant to be run on a raspberry pi like this:
+wget -O - https://raw.githubusercontent.com/nrbrt/smt172-nano-needlevalve/master/install.sh | sh
+
+This will program the nano, that needs to be connected at that moment, without any user interaction and is meant for novice users
+and easy installation.
