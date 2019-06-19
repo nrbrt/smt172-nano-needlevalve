@@ -23,5 +23,5 @@ wget -O - https://raw.githubusercontent.com/nrbrt/smt172-nano-needlevalve/master
 This will program the nano, that needs to be connected at that moment, without any user interaction and is meant for novice users
 and easy installation.
 
-The smt172 sensor needs to be connected to pin 8, the drv8825 to pin 12(dir) and pin 11(step), the homeswitch to pin 10.
-This sketch uses the great smt172 library by Edwin Croissant.
+The smt172 sensor needs to be connected to pin 8 and needs some electronics to connect it to the Arduino as shown in the connection diagram, the drv8825 to pin 12(dir) and pin 11(step), the homeswitch to pin 10.
+This sketch uses the great smt172 library and smt172 connection diagram picture by Edwin Croissant.
