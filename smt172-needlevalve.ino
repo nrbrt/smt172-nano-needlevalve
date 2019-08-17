@@ -1,4 +1,3 @@
-
 // needlevalve control and a smt172 temperature sensor
 //by nrbrt
 //GPLv3 applies
@@ -10,7 +9,7 @@
 #define dirPin 12
 #define stepPin 11
 
-#define home_switch 10 // Pin 9 connected to Home Switch (MicroSwitch (NO))
+#define home_switch 10 // Pin 10 connected to Home Switch (MicroSwitch (NO))
 
 //Create stepper object
 AccelStepper stepper(1,stepPin,dirPin); //motor interface type must be set to 1 when using a driver.
@@ -169,7 +168,7 @@ void CalibrateNeedelValve(int steps){
      initial_homing--; //Decrease by 1 for next move if needed
      delay(5);
    }
-
+   stepper.setCurrentPosition(0); 
    stepper.moveTo(steps);
    while(stepper.distanceToGo() != 0){
      stepper.run();
