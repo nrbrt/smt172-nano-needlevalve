@@ -168,12 +168,18 @@ void CalibrateNeedelValve(int steps){
      initial_homing--; //Decrease by 1 for next move if needed
      delay(5);
    }
+   
+   //set homing switch position to be 0
    stepper.setCurrentPosition(0); 
+   //set position steps beyond homing switch
    stepper.moveTo(steps);
+  
+   //move the stepper to that position
    while(stepper.distanceToGo() != 0){
      stepper.run();
    }
-  
+   
+   //set the position beyond the homing switch to be 0
    stepper.setCurrentPosition(0);
    calibration_done = true;
 }
