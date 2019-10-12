@@ -15,13 +15,14 @@
 AccelStepper stepper(1,stepPin,dirPin); //motor interface type must be set to 1 when using a driver.
 
 long last_update = 0;
-long last_measured = 0;
 long time_now;
 float temp = 0;
 String str;
 int iCount, i;
 String sParams[6];
 bool calibration_done = false;
+bool debug = false;
+bool moving = false;
 
 // Stepper Travel Variables
 
@@ -37,45 +38,56 @@ void setup() {
 
 void loop() {
   time_now = millis();
+  
+  //check if the motor is running to a position or not
+  if(stepper.distanceToGo() != 0){
+     stepper.run();
+     moving = true;
+   }else{
+    moving = false;
+   }
 
-  if((time_now - last_update >= 1000) && (temp != 0)){
+  //if 1 second has passed, since last measurement and the motor is not moving, read temperature
+  //again and send it 
+  if((time_now - last_update >= 1000) && !moving){
+        getTemp();
         Serial.println(temp);
-        temp = 0;
         last_update = millis();
-  }
-
-  if(time_now - last_measured >= 500){
-    getTemp();
-    last_measured = millis();
   }
 
   if(Serial.available() > 0){
      str = Serial.readStringUntil('\n');
      iCount = StringSplit(str,':',sParams,6);
-
+     stepper.run();
+     
      //check homeswitch
      if(sParams[0] == "es"){
         CheckHomeswitch();
      }
-        
+     stepper.run();   
+     
      //calibrate zero position needlevalve
      if(sParams[0] == "cal"){
         CalibrateNeedelValve(sParams[1].toInt());
      }
-
-     //move steps
+     stepper.run();
+     
+     //move non-blocking to absolute position
      if(sParams[0] == "move"){
         MoveTo(sParams[1].toInt());
      }
-
-     //move to absolute position
+     stepper.run();
+     
+     //move blocking to absolute position
      if(sParams[0] == "pos"){
         MoveToPosition(sParams[1].toInt());
      }
+     stepper.run();
   }
+stepper.run();
 }
 
-
+//find sensor and get temperature
 void getTemp(){
   SMT172::startTemperature(0.001);
   repeat:
@@ -89,11 +101,13 @@ void getTemp(){
   }
 }
 
+
+//split string
 int StringSplit(String sInput, char cDelim, String sParams[], int iMaxParams)
 {
     int iParamCount = 0;
     int iPosDelim, iPosStart = 0;
-
+    stepper.run();
     do {
         // Searching the delimiter using indexOf()
         iPosDelim = sInput.indexOf(cDelim,iPosStart);
@@ -112,18 +126,30 @@ int StringSplit(String sInput, char cDelim, String sParams[], int iMaxParams)
         // Adding the last parameter as the end of the line
         sParams[iParamCount] = sInput.substring(iPosStart);
         iParamCount++;
+        stepper.run();
     }
-
+    stepper.run();
     return (iParamCount);
 }
 
+
+//non-blocking move to absolute postion
 void MoveTo(int steps){
-  stepper.setMaxSpeed(100.0);
-  stepper.setAcceleration(100.0);
-  
+  //only move if calibrated
   if(calibration_done){
-    stepper.moveTo(steps);
-    while(stepper.distanceToGo() != 0){
+    //if we are not moving, move immediately, otherwise stop first, then move
+    if(!moving){
+      stepper.setAcceleration(1000.0);
+      stepper.setMaxSpeed(180.0);
+      stepper.setSpeed(180); 
+      stepper.moveTo(steps);    
+      stepper.run();
+    }else{
+      stepper.stop();
+      stepper.setMaxSpeed(180.0);
+      stepper.setAcceleration(1000.0);
+      stepper.setSpeed(180);
+      stepper.moveTo(steps);       
       stepper.run();
     }
   }else{
@@ -132,19 +158,42 @@ void MoveTo(int steps){
   
 }
 
+
+//blocking move to absolute position
 void MoveToPosition(int absolutepos){
+  //set speed
+  stepper.setMaxSpeed(180.0);
+  stepper.setAcceleration(1000.0);
+  stepper.setSpeed(180);
+  //only move if calibrated
   if(calibration_done){
-    stepper.runToNewPosition(absolutepos);
+    //if the motor is not moving, move immediately, otherwise stop first, then move
+    if(!moving){
+      stepper.runToNewPosition(absolutepos);
+    }else{
+      stepper.stop();
+      stepper.runToNewPosition(absolutepos);
+    }
   }
 }
 
+
+//check current state homing switch
 void CheckHomeswitch(){
   Serial.print("es:");
   Serial.println(digitalRead(home_switch));
+  stepper.run();
 }
 
-void CalibrateNeedelValve(int steps){
- 
+
+//calibrate zero position, using the homing switch as a fixed point from where to count steps back to the closed
+//position of the needle valve and set zero
+void CalibrateNeedelValve(int steps_past_home){
+   //if the motor is moving for some reason, stop first
+   if(moving){
+    stepper.stop();
+   }
+   //set the speed to use during the calibration
    stepper.setMaxSpeed(100.0);
    stepper.setAcceleration(100.0);
   
@@ -168,19 +217,17 @@ void CalibrateNeedelValve(int steps){
      initial_homing--; //Decrease by 1 for next move if needed
      delay(5);
    }
-   
-   //set homing switch position to be 0
+
+   //temporary zero position
    stepper.setCurrentPosition(0); 
-   //set position steps beyond homing switch
-   stepper.moveTo(steps);
-  
-   //move the stepper to that position
+   stepper.moveTo(steps_past_home);
+
+   //run motor until the position pas the homing switch is reached
    while(stepper.distanceToGo() != 0){
      stepper.run();
    }
-   
-   //set the position beyond the homing switch to be 0
+  
+  //final zero position, calibration done
    stepper.setCurrentPosition(0);
    calibration_done = true;
 }
-
