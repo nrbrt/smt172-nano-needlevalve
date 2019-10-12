@@ -7,11 +7,11 @@ This calibrates the needlevalve mechanism. It seeks the homeswitch and settles t
 
 move:x
 
-This opens (-x) or closes (x) the needle valve. It does not respond until calibrated.
+This opens (-x) or closes (x) the needle valve. The positioning is absolute. It does not respond until calibrated. This is non-blocking and movement can be interrupted by sending a new command
 
 pos:x
 
-This takes care of the absolute positioning. -x is a position that can be reached going CCW and x a position that can be reached in the CW direction and has the calibrated 0 as the starting point. It does not respond until calibrated.
+The positioning is absolute. -x is a position that can be reached going CCW and x a position that can be reached in the CW direction and has the calibrated 0 as the starting point. It does not respond until calibrated. This is a blocking operation and movement can not be interrupted, it will finish it's current move first.
 
 es
 
