@@ -1,4 +1,4 @@
-This project is to control a needlevalve mechanism with a homeswitch through the serial-USB port of an Arduino Nano, while also measuring the temperature with an smt172 in combination with a Raspberry Pi.
+This project is to control a needlevalve mechanism with a homeswitch through the serial-USB port of an Arduino Nano, while also measuring the temperature with an smt172 in combination with a Raspberry Pi. While moving the motor, temperature measurements will be paused and will resume when the motor stops.
 The commands that can be sent are the following:
 
 cal:x
