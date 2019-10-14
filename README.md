@@ -8,7 +8,7 @@ Acceleration is the amount of steps/s/s and speed is steps/s to be used during c
 
 ```move:x```
 
-This opens (-x) or closes (x) the needle valve. The positioning is absolute. It does not respond until calibrated. This is non-blocking and movement can be interrupted by sending a new command
+This opens (-x) or closes (x) the needle valve. The positioning is absolute. It does not respond until calibrated. This is non-blocking and movement can be interrupted by sending a new command.
 The default acceleration is 3000 steps/s/s and default speed is 300 steps/s
 
 ```pos:x```
