@@ -23,6 +23,9 @@ String sParams[6];
 bool calibration_done = false; //no movement before calibration
 bool moving = false; //used to determine if the motor is moving
 long initial_homing=-1;  // Used to Home Stepper at startup
+float motorspeed = 300;
+float motoraccel = 3000;
+
 
 void setup() {
   Serial.begin(115200);
@@ -68,14 +71,24 @@ void loop() {
      stepper.run();
      
      //move non-blocking to absolute position. Use=> move:target_position:motor_acceleration:motor_speed Returns nothing unless not calibrated
-     if(sParams[0] == "move" && count == 4){
-        MoveTo(sParams[1].toInt(),sParams[2].toFloat(),sParams[3].toFloat());
+     if(sParams[0] == "move" && count == 2){
+        MoveTo(sParams[1].toInt());
      }
      stepper.run();
      
      //move blocking to absolute position. Use=> pos:target_position:motor_acceleration:motor_speed Returns nothing unless not calibrated
-     if(sParams[0] == "pos" && count == 4){
-        MoveToPosition(sParams[1].toInt(),sParams[2].toFloat(),sParams[3].toFloat());
+     if(sParams[0] == "pos" && count == 2){
+        MoveToPosition(sParams[1].toInt());
+     }
+     stepper.run();
+
+     if(sParams[0] == "spd" && count == 2){
+      motorspeed = sParams[1].toFloat();
+     }
+     stepper.run();
+
+     if(sParams[0] == "acc" && count == 2){
+      motorspeed = sParams[1].toFloat();
      }
      stepper.run();
   }
@@ -129,7 +142,7 @@ int StringSplit(String sInput, char cDelim, String sParams[], int iMaxParams)
 
 
 //non-blocking move to absolute postion
-void MoveTo(int steps, float motoraccel, float motorspeed){
+void MoveTo(int steps){
   //only move if calibrated
   if(calibration_done){
     
@@ -151,7 +164,7 @@ void MoveTo(int steps, float motoraccel, float motorspeed){
 
 
 //blocking move to absolute position
-void MoveToPosition(int absolutepos, float motoraccel, float motorspeed){
+void MoveToPosition(int absolutepos){
   //set speed
   stepper.setMaxSpeed(motorspeed);
   stepper.setAcceleration(motoraccel);
