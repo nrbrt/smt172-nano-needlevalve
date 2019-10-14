@@ -4,17 +4,17 @@ The commands that can be sent are the following:
 ```cal:x:acceleration:speed```
 
 This calibrates the needlevalve mechanism. It seeks the homeswitch and settles there, then it moves x steps CW or CCW (-x = CCW, x = CW) and defines that position to be 0. This makes manual finetuning possible to make sure the needlevalve can be opened with the motor without loosing steps.
-Acceleration is the amount of steps/s/s and speed is steps/s to be used during calibration
+Acceleration is the amount of steps/s/s and speed is steps/s to be used during calibration. Using full-step mode and a Nema17 motor, ```cal:x:100:100``` are good values to start with.
 
 ```move:x:acceleration:speed```
 
 This opens (-x) or closes (x) the needle valve. The positioning is absolute. It does not respond until calibrated. This is non-blocking and movement can be interrupted by sending a new command
-Acceleration is the amount of steps/s/s and speed is steps/s to be used while executing the move.
+Acceleration is the amount of steps/s/s and speed is steps/s to be used while executing the move. Using full-step mode and a Nema17 motor, ```move:x:3000:300``` are good values to start with.
 
 ```pos:x:acceleration:speed```
 
 The positioning is absolute. -x is a position that can be reached going CCW and x a position that can be reached in the CW direction and has the calibrated 0 as the starting point. It does not respond until calibrated. This is a blocking operation and movement can not be interrupted, it will finish it's current move first.
-Acceleration is the amount of steps/s/s and speed is steps/s to be used while executing the move.
+Acceleration is the amount of steps/s/s and speed is steps/s to be used while executing the move. Using full-step mode and a Nema17 motor, ```pos:x:3000:300``` are good values to start with.
 
 ```es```
 
