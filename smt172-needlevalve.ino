@@ -155,7 +155,7 @@ void MoveTo(int steps){
     stepper.run();
     
   }else{
-    Serial.print("not calibrated,");
+    Serial.println("not calibrated");
   }
   
 }
