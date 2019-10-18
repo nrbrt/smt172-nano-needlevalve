@@ -30,6 +30,7 @@ This sets the motor speed used by "move" and "pos" and is in steps/s
 
 
 The install script is meant to be run on a raspberry pi like this:
+
 ```wget -O - https://raw.githubusercontent.com/nrbrt/smt172-nano-needlevalve/master/install.sh | sh```
 
 This will program the nano, that needs to be connected at that moment, without any user interaction and is meant for novice users
